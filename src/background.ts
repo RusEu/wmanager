@@ -9,18 +9,25 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win: any;
 
+app.disableHardwareAcceleration();
 // Standard scheme must be registered before the app is ready
-protocol.registerStandardSchemes(['app'], { secure: true })
+protocol.registerStandardSchemes(['app'], { secure: true });
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600 })
+  win = new BrowserWindow({ 
+    width: 600, 
+    height: 400, 
+    frame: false, 
+    transparent: true,
+    movable: true
+  });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -45,7 +52,7 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-    createWindow()
+    setTimeout(createWindow);
   }
 })
 
@@ -61,7 +68,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+  setTimeout(createWindow, 300);
 })
 
 // Exit cleanly on request from parent process in development mode.
